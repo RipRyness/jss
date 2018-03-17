@@ -30,22 +30,26 @@ var jss = (function() {
     }
 
     function getRules(sheet, selector) {
-        var rules = sheet.cssRules || sheet.rules || [];
-        var results = [];
-        // Browsers report selectors in lowercase
-        selector = selector.toLowerCase();
-        for (var i = 0; i < rules.length; i++) {
-            var selectorText = rules[i].selectorText;
-            // Note - certain rules (e.g. @rules) don't have selectorText
-            if (selectorText && (selectorText == selector || selectorText == swapAdjSelAttr(selector) || selectorText == swapPseudoElSyntax(selector))) {
-                results.push({
-                    sheet: sheet,
-                    index: i,
-                    style: rules[i].style
-                });
+        try {
+            var rules = sheet.cssRules || sheet.rules || [];
+            var results = [];
+            // Browsers report selectors in lowercase
+            selector = selector.toLowerCase();
+            for (var i = 0; i < rules.length; i++) {
+                var selectorText = rules[i].selectorText;
+                // Note - certain rules (e.g. @rules) don't have selectorText
+                if (selectorText && (selectorText == selector || selectorText == swapAdjSelAttr(selector) || selectorText == swapPseudoElSyntax(selector))) {
+                    results.push({
+                        sheet: sheet,
+                        index: i,
+                        style: rules[i].style
+                    });
+                }
             }
+            return results;
+        } catch (ex) {
+            return []
         }
-        return results;
     }
 
     function addRule(sheet, selector) {
